@@ -5,6 +5,7 @@ format: pdf
 editor: visual
 ---
 
+Github URL: <https://github.com/syeomans0/STATS-506-Final-Project.git>
 
 ```{r}
 
