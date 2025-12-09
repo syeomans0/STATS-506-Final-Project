@@ -1,14 +1,19 @@
-#full code for project
+#Full code for project
+#Libraries I will need for this project
 library(tidyverse)
 library(ggplot2)
 library(dplyr)
 library(data.table)
 library(haven)
+
+#Load in my data set
 gss <- read_sas("gss7224_r2.sas7bdat")
+#Preview
 head(gss)
+#Make sure the year variable is numeric
 gss$YEAR <- as.numeric(gss$YEAR)
 
-#Variables of interest: 
+#Variables of interest: that relate to confidence in institutions 
 #CONFED - CONFID. IN EXEC BRANCH OF FED GOVT 
 #CONPRESS - CONFIDENCE IN PRESS 
 #CONJUDGE - CONFID. IN UNITED STATES SUPREME COURT 
@@ -17,28 +22,33 @@ gss$YEAR <- as.numeric(gss$YEAR)
 #CONGOVT - CONFIDENCE IN GOVERNMENT DEPARTMENTS 
 #CONCONG - CONFIDENCE IN US CONGRESS (diff between this and CONLEGIS?)
 #CONFINAN - CONFID IN BANKS & FINANCIAL INSTITUTIONS
-#graphs of these over time
+
+#Make sure these vars are in the data set
 conf_vars <- c("CONFED","CONPRESS","CONJUDGE","CONLEGIS","CONARMY",
                "CONGOVT","CONCONG","CONFINAN")
 conf_vars %in% names(gss)
-
+#Get rid of the Missing values in these variables and the not answered numbers, 8 & 9
 gss <- gss %>%
        mutate(across(all_of(conf_vars), ~replace(., . %in% c(8, 9), NA)))
 
-rm(years_post)
+#Set up years of interest
+#rm(years_post)
 years_pre  <- 2012:2018
 years_dur <- c(2021, 2022, 2023, 2024)
+
+#Make a subsetted pre-pandemic data set
 gss_pre <- gss %>%
            filter(YEAR %in% years_pre)
-#head(gss_pre)
+#head(gss_pre) <- previewed to see if it worked
 
-rm(gss_post)
+#Subset for the during and post pandemic dates
+#rm(gss_post)
 gss_dur <- gss %>%
             filter(YEAR %in% years_dur)
 
-#need wights if we want this to be representative of the US population
-
-# basic scatter-plot for CONJUDGE and CONLEGIS
+#Basic scatter-plot for CONJUDGE and CONLEGIS (without weights so just raw data)
+#Since there are tons of IDs (aka respondents) find the average confidence
+#This first one is for the CONJUDGE (confidence in supreme court)
 gss_summary <- gss_pre %>%
                group_by(YEAR) %>%
                summarize(mean_conf = mean(CONJUDGE, na.rm = TRUE)) %>%
@@ -52,6 +62,7 @@ ggplot(gss_summary, aes(x = YEAR, y = mean_conf)) +
        x = "Year", y = "Average Confidence") +
   theme_minimal()
 
+#Same thing as above but for the confidence in congress
 gss_summary1 <- gss_pre %>%
                 group_by(YEAR) %>%
                 summarize(mean_confi = mean(CONLEGIS, na.rm = TRUE)) %>%
@@ -60,7 +71,27 @@ gss_summary1 <- gss_pre %>%
 ggplot(gss_summary1, aes(x = YEAR, y = mean_confi)) +
   geom_point(size = 3) +
   geom_line() +
+  geom_text(aes(label = round(mean_confi, 2)),
+            vjust = -0.8, hjust = 0.5,           
+            size = 3) +                   
   scale_y_continuous(breaks = 1:3, labels = c("Great deal", "Some", "Hardly any")) +
-  labs(title = "Average Confidence in Congress",
-       x = "Year", y = "Average Confidence") +
+  labs(
+    title = "Average Confidence in Congress",
+    x = "Year", 
+    y = "Average Confidence (Mean Score, unweighted)",
+    caption = "Key: 1 = 'Hardly any', 2 = 'Some', 3 = 'Great deal'" #Added key
+  ) +
   theme_minimal()
+#low in 2012 (recession so makes sense), then goes up since we get out of it, 
+#then right back down after election
+
+#Need wights if we want this to be representative of the US population
+
+
+
+
+
+
+
+
+
