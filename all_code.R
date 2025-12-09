@@ -130,12 +130,58 @@ ggplot(gss_sum1, aes(x = YEAR, y = mean_con)) +
 #Need wights if we want this to be representative of the US population
 #For the pre-pandemic we need to use the WTSS weight
 #For the during/post we need to use the WTSSPS weight
+#These are already in the data set but want to give them the same name for ease of later use
+gss_pre <- gss_pre %>%
+           mutate(weight = WTSS,
+                  period = "Pre-pandemic")
 
+gss_dur <- gss_dur %>%
+           mutate(weight = WTSSPS,
+                  period = "During/Post-Pandemic")
+#rm(gss_sum, gss_sum1, gss_summary, gss_summary1)
+#How does adding these weights change our plots we originally made?
+#Combine the two data sets first (the ones with years labeled)
+gss_fin <- bind_rows(gss_pre, gss_dur)
 
+#Clean all the confidence vars (already set) in the combined
+gss_fin <- gss_fin %>%
+           mutate(across(all_of(conf_vars), ~replace(., . %in% c(8,9), NA)))
 
+#Find the mean confidence level over time (1-3 scale; labels above)
+#SUPREME COURT
+summary_court <- gss_fin %>%
+                 summarize(mean_conf = weighted.mean(CONJUDGE, 
+                                      weight, na.rm=TRUE), .by=c(period, YEAR))
 
+ggplot(summary_court, aes(YEAR, mean_conf, color=period)) +
+  geom_point(size=3) +
+  geom_line()+
+  geom_text(aes(label = round(mean_conf, 2)),
+            vjust = -0.8, hjust = 0.5,           
+            size = 3) +
+  scale_x_continuous(breaks = summary_court$YEAR) +
+  scale_y_continuous(breaks=1:3, labels=c("Great deal","Some","Hardly any")) +
+  labs(title="Weighted Mean Confidence in Supreme Court",
+       x = "Year", 
+       y = "Weighted Confidence") +
+  theme_minimal()
 
+#EXEC BRANCH
+summary_exec <- gss_fin %>%
+  summarize(mean_conf = weighted.mean(CONFED, 
+                                      weight, na.rm=TRUE), .by=c(period, YEAR))
 
-
+ggplot(summary_exec, aes(YEAR, mean_conf, color=period)) +
+  geom_point(size=3) +
+  geom_line()+
+  geom_text(aes(label = round(mean_conf, 2)),
+            vjust = -0.8, hjust = 0.5,           
+            size = 3) +
+  scale_x_continuous(breaks = summary_court$YEAR) +
+  scale_y_continuous(breaks=1:3, labels=c("Great deal","Some","Hardly any")) +
+  labs(title="Weighted Mean Confidence in the Executive Branch",
+       x = "Year", 
+       y = "Weighted Confidence") +
+  theme_minimal()
 
 
