@@ -57,9 +57,14 @@ gss_summary <- gss_pre %>%
 ggplot(gss_summary, aes(x = YEAR, y = mean_conf)) +
   geom_point(size = 3) +
   geom_line() +
+  geom_text(aes(label = round(mean_conf, 2)),
+            vjust = -0.8, hjust = 0.5,           
+            size = 3) +
   scale_y_continuous(breaks = 1:3, labels = c("Great deal", "Some", "Hardly any")) +
   labs(title = "Average Confidence in US Supreme Court",
-       x = "Year", y = "Average Confidence") +
+       x = "Year", 
+       y = "Average Confidence",
+       caption = "Key: 1 = 'Hardly any', 2 = 'Some', 3 = 'Great deal'") +
   theme_minimal()
 
 #Same thing as above but for the confidence in congress
@@ -85,7 +90,46 @@ ggplot(gss_summary1, aes(x = YEAR, y = mean_confi)) +
 #low in 2012 (recession so makes sense), then goes up since we get out of it, 
 #then right back down after election
 
+#Want to quick check another variable of interest: CONPRESS and want to do dur/post year quick
+gss_sum <- gss_pre %>%
+           group_by(YEAR) %>%
+           summarize(mean_confid = mean(CONPRESS, na.rm = TRUE)) %>%
+           ungroup()
+
+ggplot(gss_sum, aes(x = YEAR, y = mean_confid)) +
+  geom_point(size = 3) +
+  geom_line() +
+  geom_text(aes(label = round(mean_confid, 2)),
+            vjust = -0.8, hjust = 0.5,           
+            size = 3) +
+  scale_y_continuous(breaks = 1:3, labels = c("Great deal", "Some", "Hardly any")) +
+  labs(title = "Average Confidence in the Press",
+       x = "Year", 
+       y = "Average Confidence",
+       caption = "Key: 1 = 'Hardly any', 2 = 'Some', 3 = 'Great deal'") +
+  theme_minimal()
+
+gss_sum1 <- gss_dur %>%
+            group_by(YEAR) %>%
+            summarize(mean_con = mean(CONPRESS, na.rm = TRUE)) %>%
+            ungroup()
+
+ggplot(gss_sum1, aes(x = YEAR, y = mean_con)) +
+  geom_point(size = 3) +
+  geom_line() +
+  geom_text(aes(label = round(mean_con, 2)),
+            vjust = -0.8, hjust = 0.5,           
+            size = 3) +
+  scale_y_continuous(breaks = 1:3, labels = c("Great deal", "Some", "Hardly any")) +
+  labs(title = "Average Confidence in the Press",
+       x = "Year", 
+       y = "Average Confidence",
+       caption = "Key: 1 = 'Hardly any', 2 = 'Some', 3 = 'Great deal'") +
+  theme_minimal()
+
 #Need wights if we want this to be representative of the US population
+#For the pre-pandemic we need to use the WTSS weight
+#For the during/post we need to use the WTSSPS weight
 
 
 
