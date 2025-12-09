@@ -7,23 +7,11 @@ editor: visual
 
 Github URL: <https://github.com/syeomans0/STATS-506-Final-Project.git>
 
-```{r}
 
-```
+## Introduction and Methodology
 
-```{r}
+Public confidence in institutions evolves over time and is influenced by major national events and politics. The COVID-19 pandemic was the most recent event that altered everyday life, including social, economic, and political environments, and potentially changed Americans' trust in their government's institutions. This project investigates how Americans' confidence in major government programs and institutions (i.e., the military, media, Congress, the Supreme Court, and more) has changed from pre-pandemic (2012-2018) \footnote{The GSS has moved away from yearly surveys meaning the 2015-2019 time frame I originally proposed only had two data points. More years were added to include more data for reference.} to during the pandemic period (2021-2022) and post-pandemic (2023-2024) \footnote{The federal COVID-19 PHE declaration ended on May 11, 2023.}. Using data from the General Social Survey (GSS), this study will examine whether these patterns differ across demographic groups such as race and sex.
 
-```
-
-```{r}
-
-```
-
-## Introduction
-
-Paragraphs
-
-## Methods
 
 Paragraphs
 
