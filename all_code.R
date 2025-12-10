@@ -130,6 +130,7 @@ ggplot(gss_sum1, aes(x = YEAR, y = mean_con)) +
 #Need wights if we want this to be representative of the US population
 #For the pre-pandemic we need to use the WTSS weight
 #For the during/post we need to use the WTSSPS weight
+#TALK MORE ABOUT THE WEIGHT CHOICES
 #These are already in the data set but want to give them the same name for ease of later use
 gss_pre <- gss_pre %>%
            mutate(weight = WTSS,
@@ -214,22 +215,83 @@ library(multcomp)
 install.packages("emmeans")
 library(emmeans)
 
-#Chi square test with the survey package (since we have weights)
+#Chi square test with the survey package (since we have weights, for all 8 vars)
 gss_survey <- svydesign(id = ~1, weights = ~weight, data = gss_fin)
 
 court_chi <- svychisq(~ period + CONJUDGE, design = gss_survey)
 court_chi
+#significant
+
 execbranch_chi <- svychisq(~ period + CONFED, design = gss_survey)
 execbranch_chi
+#significant
+
+#DOIng both congress vars to see if there is a diff and then will do more digging if there is
+congress_chi1 <- svychisq(~ period + CONLEGIS, design = gss_survey)
+congress_chi1
+#not significant, use this variable
+
+#rm(congress_chi2)
+#congress_chi2 <- svychisq(~ period + CONCONG, design = gss_survey) 
+#congress_chi2
+#p-value is NA, wth? poss due to zero expected frequencies or unbalanced table...
+#summary(gss_fin$CONCONG) #hella NAs idk man
+
+press_chi <- svychisq(~ period + CONPRESS, design = gss_survey)
+press_chi
+#Significant
+
+army_chi <- svychisq(~ period + CONARMY, design = gss_survey)
+army_chi
+#significant, interesting would have thought this would be pretty consistent (need to graph)
+summary_army <- gss_fin %>%
+  summarize(mean_conf = weighted.mean(CONARMY, 
+                                      weight, na.rm=TRUE), .by=c(period, YEAR))
+
+ggplot(summary_army, aes(YEAR, mean_conf, color=period)) +
+  geom_point(size=3) +
+  geom_line()+
+  geom_text(aes(label = round(mean_conf, 2)),
+            vjust = -0.8, hjust = 0.5,           
+            size = 3) +
+  scale_x_continuous(breaks = summary_army$YEAR) +
+  scale_y_continuous(breaks=1:3, labels=c("Great deal","Some","Hardly any")) +
+  labs(title="Weighted Mean Confidence in the Military",
+       x = "Year", 
+       y = "Weighted Confidence") +
+  theme_minimal()
+#Wow this is way lower than I thought the values would be, interesting 
+#Afghanistan and other wars? 
+#a bit more confident during/post pandemic, why?
+ 
+#dept_chi <- svychisq(~ period + CONGOVT, design = gss_survey)
+#dept_chi
+#table(gss_fin$CONGOVT)
+#^ this was ZERO so can't use
+
+finance_chi <- svychisq(~ period + CONFINAN, design = gss_survey)
+finance_chi 
+#significant, graph
+summary_finance <- gss_fin %>%
+  summarize(mean_conf = weighted.mean(CONFINAN, 
+                                      weight, na.rm=TRUE), .by=c(period, YEAR))
+
+ggplot(summary_finance, aes(YEAR, mean_conf, color=period)) +
+  geom_point(size=3) +
+  geom_line()+
+  geom_text(aes(label = round(mean_conf, 2)),
+            vjust = -0.8, hjust = 0.5,           
+            size = 3) +
+  scale_x_continuous(breaks = summary_finance$YEAR) +
+  scale_y_continuous(breaks=1:3, labels=c("Great deal","Some","Hardly any")) +
+  labs(title="Weighted Mean Confidence in Financial Institutions",
+       x = "Year", 
+       y = "Weighted Confidence") +
+  theme_minimal()
+#Higher after great recession, then drops in 2018, and low throught and after pandemic
 
 
-
-
-
-
-
-
-
+#Need another test procedure to see if these results are consistent
 
 
 
