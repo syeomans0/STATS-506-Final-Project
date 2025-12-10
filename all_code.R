@@ -22,6 +22,10 @@ gss$YEAR <- as.numeric(gss$YEAR)
 #CONGOVT - CONFIDENCE IN GOVERNMENT DEPARTMENTS 
 #CONCONG - CONFIDENCE IN US CONGRESS (diff between this and CONLEGIS?)
 #CONFINAN - CONFID IN BANKS & FINANCIAL INSTITUTIONS
+#Demographic variables for future use:
+#SEX - RESPONDENTS SEX
+#RACE - RACE OF RESPONDENT
+#PARTYID - POLITICAL PARTY AFFILIATION (of respondent)
 
 #Make sure these vars are in the data set
 conf_vars <- c("CONFED","CONPRESS","CONJUDGE","CONLEGIS","CONARMY",
@@ -291,7 +295,10 @@ ggplot(summary_finance, aes(YEAR, mean_conf, color=period)) +
 #Higher after great recession, then drops in 2018, and low throught and after pandemic
 
 
-#Need another test procedure to see if these results are consistent
+#This just tested the association but now need to see controlling for covariates are there changes?
+#Need another test procedure to see if these results are consistent (maybe)
+#Use regression to do this 
+#Can do OLS first but I don't think this is the best for categorical survey stuff
 
 
 
