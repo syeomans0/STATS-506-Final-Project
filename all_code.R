@@ -177,11 +177,64 @@ ggplot(summary_exec, aes(YEAR, mean_conf, color=period)) +
   geom_text(aes(label = round(mean_conf, 2)),
             vjust = -0.8, hjust = 0.5,           
             size = 3) +
-  scale_x_continuous(breaks = summary_court$YEAR) +
+  scale_x_continuous(breaks = summary_exec$YEAR) +
   scale_y_continuous(breaks=1:3, labels=c("Great deal","Some","Hardly any")) +
   labs(title="Weighted Mean Confidence in the Executive Branch",
        x = "Year", 
        y = "Weighted Confidence") +
   theme_minimal()
+
+#PRESS (none have been really low but maybe this will show bigger changes?)
+summary_press <- gss_fin %>%
+                 summarize(mean_conf = weighted.mean(CONPRESS, 
+                                        weight, na.rm=TRUE), .by=c(period, YEAR))
+
+ggplot(summary_press, aes(YEAR, mean_conf, color=period)) +
+  geom_point(size=3) +
+  geom_line()+
+  geom_text(aes(label = round(mean_conf, 2)),
+            vjust = -0.8, hjust = 0.5,           
+            size = 3) +
+  scale_x_continuous(breaks = summary_press$YEAR) +
+  scale_y_continuous(breaks=1:3, labels=c("Great deal","Some","Hardly any")) +
+  labs(title="Weighted Mean Confidence in the Press/Media",
+       x = "Year", 
+       y = "Weighted Confidence") +
+  theme_minimal()
+
+
+#Formal testing to see if there is a difference:
+#Null: the confidence levels of gov orgs are the same for pre and during/post pandemic years
+#Alternative: the confidence levels are different
+#Some more packages, now for hypo test
+install.packages("survey")
+library(survey)
+install.packages("multcomp")
+library(multcomp)
+install.packages("emmeans")
+library(emmeans)
+
+#Chi square test with the survey package (since we have weights)
+gss_survey <- svydesign(id = ~1, weights = ~weight, data = gss_fin)
+
+court_chi <- svychisq(~ period + CONJUDGE, design = gss_survey)
+court_chi
+execbranch_chi <- svychisq(~ period + CONFED, design = gss_survey)
+execbranch_chi
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
