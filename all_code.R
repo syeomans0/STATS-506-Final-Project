@@ -313,12 +313,13 @@ summary(glm_press)
 #significant
 glm_army <- svyglm(CONARMY ~ period, design = gss_survey)
 summary(glm_army)
-#
+#significant
 glm_finance <- svyglm(CONFINAN ~ period, design = gss_survey)
 summary(glm_finance)
-#
+#significant
+rm(glm_congress, glm_court, glm_exec, glm_press, glm_army, glm_finance, conf_vars)
 
-
+#Think I have been using the wrong weight, need to go back and do some digging
 #Adding in the different demographic factors that might be influencing these trends
 
 
@@ -327,7 +328,7 @@ summary(glm_finance)
 
 
 #President political affiliation and the respondent's party affil
-
+#scatterplot showing this breakdown would be cool
 
 
 
