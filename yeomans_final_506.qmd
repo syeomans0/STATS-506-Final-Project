@@ -5,6 +5,11 @@ format: pdf
 editor: visual
 ---
 
+## Abstract
+
+150-250 words
+
+
 ## Introduction and Methodology
 
 Public confidence in institutions evolves over time and is influenced by major national events and politics. The COVID-19 pandemic was the most recent event that altered everyday life, including social, economic, and political environments, and potentially changed Americans' trust in their government's institutions. This project investigates how Americans' confidence in major government programs and institutions (i.e., the military, media, Congress, the Supreme Court, and more) has changed from the pre-pandemic period (2012–2018) to the pandemic and post-pandemic period (2021–2024)\footnote{The federal COVID-19 PHE declaration ended on May 11, 2023.}. Using data from the General Social Survey (GSS), this study will examine whether these patterns differ across demographic groups such as race and sex.
@@ -13,22 +18,29 @@ Exploratory data analysis revealed several patterns in institutional confidence 
 
 After cleaning the data and addressing missing or invalid responses, the final data set contains $20,612$ observations across $6,906$ variables.
 
-
-Paragraphs
+To formally test if differences exist between the two periods, statistical models and testing were used. To start, a chi-squared test of independence was used to see if an association existed between period and the confidence in the institutions of interest. Next, a generalized linear model (GLM) was used to see if this association was significant and to give it magnitude. Once this was done, we added in demographic information that could be playing a role in people's confidence in these institutions. Lastly, the party affiliation of the sitting president and the party affiliation of the respondent were explored, as these were thought to play a role in confidence as well. 
 
 
 ## Analysis and Results
 
-Paragraphs
+From the chi-square tests, it was found that ...
 
 ```{r}
 #figure/plot
 
 ```
 
-## Conclusion
+The GLMs showed if the chi-squared test associations were significant and gave them magnitude. From these tests we found that ...
+
+## Discussion
 
 Paragraphs
+
+Limitations and future directions
+
+## Conclusion
+
+In conclusion, 
 
 
 Github URL: <https://github.com/syeomans0/STATS-506-Final-Project.git>

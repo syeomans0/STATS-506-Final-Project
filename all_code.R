@@ -212,11 +212,11 @@ ggplot(summary_press, aes(YEAR, mean_conf, color=period)) +
 #Null: the confidence levels of gov orgs are the same for pre and during/post pandemic years
 #Alternative: the confidence levels are different
 #Some more packages, now for hypo test
-install.packages("survey")
+install.packages("survey") #came across when looking how to add survey weights to models
 library(survey)
-install.packages("multcomp")
+install.packages("multcomp") #from class
 library(multcomp)
-install.packages("emmeans")
+install.packages("emmeans") #from class
 library(emmeans)
 
 #Chi square test with the survey package (since we have weights, for all 8 vars)
@@ -224,7 +224,7 @@ gss_survey <- svydesign(id = ~1, weights = ~weight, data = gss_fin)
 
 court_chi <- svychisq(~ period + CONJUDGE, design = gss_survey)
 court_chi
-#significant
+#significant (associated and nothing else)
 
 execbranch_chi <- svychisq(~ period + CONFED, design = gss_survey)
 execbranch_chi
@@ -298,10 +298,35 @@ ggplot(summary_finance, aes(YEAR, mean_conf, color=period)) +
 #This just tested the association but now need to see controlling for covariates are there changes?
 #Need another test procedure to see if these results are consistent (maybe)
 #Use regression to do this 
-#Can do OLS first but I don't think this is the best for categorical survey stuff
+#Can do glm first but I don't think this is the best for categorical survey stuff
+glm_court <- svyglm(CONJUDGE ~ period, design = gss_survey)
+summary(glm_court)
+#significant
+glm_exec <- svyglm(CONFED ~ period, design = gss_survey)
+summary(glm_exec)
+#significant
+glm_congress <- svyglm(CONLEGIS ~ period, design = gss_survey)
+summary(glm_congress)
+#not significant
+glm_press <- svyglm(CONPRESS ~ period, design = gss_survey)
+summary(glm_press)
+#significant
+glm_army <- svyglm(CONARMY ~ period, design = gss_survey)
+summary(glm_army)
+#
+glm_finance <- svyglm(CONFINAN ~ period, design = gss_survey)
+summary(glm_finance)
+#
+
+
+#Adding in the different demographic factors that might be influencing these trends
 
 
 
+
+
+
+#President political affiliation and the respondent's party affil
 
 
 
