@@ -1,19 +1,21 @@
 ---
-title: "Confidence in US Institutions - Final Project 506"
+title: "Confidence in US Institutions from Pre to Post-Pandemic"
+subtitle: "STATS 506 Final Project"
+title-fontstyle: "large" 
+subtitle-fontstyle: "small"
 author: "Sydney Yeomans"
+author-fontstyle: "small"
 format: pdf
 editor: visual
 ---
 
-## Abstract
-150-250 words
-
+\vspace{-2.0cm}
 
 ## Introduction 
 Public confidence in institutions evolves over time and is influenced by major national events and politics. The COVID-19 pandemic was the most recent event that altered everyday life, including social, economic, and political environments, and potentially changed Americans' trust in their government's institutions. This project investigates how Americans' confidence in major government programs and institutions (i.e., the military, media, Congress, the Supreme Court, and more) has changed from the pre-pandemic period (2012–2018) to the pandemic and post-pandemic period (2021–2024)\footnote{The federal COVID-19 PHE declaration ended on May 11, 2023.}. Using data from the General Social Survey (GSS), this study will examine whether these patterns differ across demographic groups such as race and sex.
 
 ## Methods 
-This project utilizes publicly available data from the General Social Survey (GSS), conducted by the National Opinion Research Center (NORC), which is associated with the University of Chicago. The GSS includes data from 1972 to 2024 and contains a standard set of demographic, behavioral, and attitudinal questions, plus any topics of special interest. There are various questions that ask about the respondents confidence in government organizations and institutions. The question they ask the respondent's in regards to confidence is the following, ``I am going to name some institutions in this country. As far as the people running these institutions are concerned, would you say you have a great deal of confidence, only some confidence, or hardly any confidence at all in them?'' The respondent can answer either ``A great deal (1),'' ``Only some (2),'' or ``Hardly any (3).'' There are codes for responses such as don't know or no response as well. 
+This project utilizes publicly available data from the General Social Survey (GSS), conducted by the National Opinion Research Center (NORC), which is associated with the University of Chicago. The GSS includes data from 1972 to 2024 and contains a standard set of demographic, behavioral, and attitudinal questions, plus any topics of special interest. There are various questions that ask about the respondents confidence in government organizations and institutions. The question they ask the respondent in regards to confidence is the following, "I am going to name some institutions in this country. As far as the people running these institutions are concerned, would you say you have a great deal of confidence (1), only some confidence (2), or hardly any confidence (3) at all in them?" \cite{survey_q}.
 
 NORC does not provide their  design-adjusted weights due to wanting to keep confidentiality and protecting the respondents. Instead they add weights to the public data set adjusted by population controls, specifically, post-stratification weight variables WTSSPS and WTSSNRPS. It is very important to use these post-stratification weights to get more representative results, and since I am using years $2012-2024$, I will be using WTSSNRPS, which is available for years $2004-2024$. This weight was assigned to the completed cases and accounts for all stages of selection: National Frame Areas (NFA), segment, housing unit, within household, raking to known population totals, and non-response adjustment.  
 
@@ -23,33 +25,32 @@ To formally test if differences exist between the two periods, statistical model
 
 
 ## Analysis and Results
+The chi-square test of independence revealed if the confidence in our institutions of interest were associated with time period, which is this case was pre-pandemic and during/post-pandemic. After running these test we found that there is an association for confidence and period for the Supreme Court, the executive branch of government, the media, the army and banks and financial institutions. This means that we would reject the null of the chi-square test, that our two categorical variables are independent (i.e. no association). We would conclude that these variables are not independent. The variable for the confidence in congress is not significant, meaning we fail to reject the null. Therefore, confidence in congress and period show no association. Although we were able to find an association we do not know what this association is. 
 
-From the chi-square tests, it was found that ...
+To find out the type of association we found with the chi-square tests, we used generalized linear models (GLM). Normal link because interested in how much the confidence changes... Starting with confidence in the Supreme Court, we found a statistically significant result, with a p-value of $<2e^{-16}$, that showed pre-pandemic confidence was $-0.21$ points less than the post-pandemic confidence showing there was more confidence before the pandemic. Next, the confidence in the executive branch showed similar significant results (p-value of $0.0039$), pre-pandemic confidence was $-0.04$ points less than post-pandemic, but this result is not very big in magnitude. Congress was found not to be associated with period and the GLM results are consistent with this, producing a non-significant p-value. The confidence in the media and the military shows similar trends as the supreme court and executive branch, with both being statistically significant (p-value of $1.53e^{-05}$ and $<2e^{-16}$ respectively) and having more confidence in these institutions pre-pandemic with coefficients of $-0.066$ and $-0.13611$ for the media and military respectively. The confidence in banks and financial institutions had opposite results, we see more confidence in the post-pandemic period since we found a statistically significant (p-value of $1.78e^{-10}$) coefficient of $0.09561$. Therefore, for the most part, we see that confidence in government institutions was higher in the pre-pandemic period.  
 
-```{r}
-#figure/plot
+After finding these trends, we were curious if there were other variables affecting the confidence of the respondents to the GSS. With this, we added in demographic information into the GLM, namely, we added sex and race. Adding in this information, it was found that...
 
-```
-
-The GLMs showed if the chi-squared test associations were significant and gave them magnitude. From these tests we found that ...
+Lastly, it was thought that political party might affect the relationship of confidence in institutions and time period. 
 
 ## Discussion
 
-Paragraphs
+In this paper, we explored how the confidence in major institutions in the US change from pre-pandemic to post-pandemic. The results consistently showed ...
 
-Limitations and future directions
+Despite the insights gained, there are some limitations that should be addressed.
 
-## Conclusion
+In conclusion, ...
 
-In conclusion, 
-
-
-Github URL: <https://github.com/syeomans0/STATS-506-Final-Project.git>
 \clearpage
+Github URL: <https://github.com/syeomans0/STATS-506-Final-Project.git>
+\\
 \begin{thebibliography}{99}
+
+\bibitem{survey_q}
+Smith, Tom W., Davern, Michael, Freese, Jeremy, and Stephen L. Morgan. General Social Surveys, 1972-2018, Cumulative Codebook. Principal Investigator, Tom W. Smith; Co-Principal Investigators, Michael Davern, Jeremy Freese
+and Stephen L. Morgan, NORC ed. Chicago: NORC, 2019. 1 data file (64,814 logical records) and 1 codebook (3,758 pp).
 
 \bibitem{chi_sqr} 
 citation...
 
 \end{thebibliography}
-
