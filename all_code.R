@@ -33,7 +33,7 @@ gss$YEAR <- as.numeric(gss$YEAR)
 
 #Make sure these vars are in the data set
 conf_vars <- c("CONFED","CONPRESS","CONJUDGE","CONLEGIS","CONARMY",
-               "CONGOVT","CONCONG","CONFINAN", "CONSCI")
+               "CONGOVT","CONCONG","CONFINAN")
 conf_vars %in% names(gss)
 #Get rid of the Missing values in these variables and the not answered numbers, 8 & 9
 gss <- gss %>%
@@ -400,22 +400,35 @@ summary_ps_exec <- gss_fin %>%
 ggplot(summary_ps_exec, aes(x = period, y = mean_conf, color = SEX, group = SEX)) +
   geom_point(size = 3) +
   geom_line(size = 1.2) +
-  labs(x = "Period", y = "Weighted Mean Confidence", color = "Sex")
+  labs(title="Weighted Mean Confidence in Financial Institutions by Sex",
+       x = "Period", 
+       y = "Weighted Mean Confidence", 
+       color = "SEX")
 
 interaction_race <- svyglm(CONFED ~ period * RACE, design = gss_survey)
 summary(interaction_race)
 
 summary_pr_exec <- gss_fin %>%
-  group_by(period, RACE) %>%
-  summarize(
-    mean_conf = weighted.mean(CONFED, WTSSNRPS, na.rm = TRUE),
-    .groups = "drop")
+                   group_by(period, RACE) %>%
+            summarize(mean_conf = weighted.mean(CONFED, WTSSNRPS, na.rm = TRUE),
+                      .groups = "drop") %>%
+                   ungroup()
 
 #Interaction plot
 ggplot(summary_pr_exec, aes(x = period, y = mean_conf, color = RACE, group = RACE)) +
   geom_point(size = 3) +
   geom_line(size = 1.2) +
-  labs(x = "Period", y = "Weighted Mean Confidence", color = "RACE")
+  labs(title="Weighted Mean Confidence in Financial Institutions by Race",
+       x = "Period", 
+       y = "Weighted Mean Confidence", 
+       color = "RACE")
+
+#Publication ready plot aka my figures for the actual report
+#can do what I have been doing by facet by institution or do interaction plots
+
+
+
+
 
 #President political affiliation and the respondent's party affiliation
 #scatterplot showing this breakdown would be cool, 
