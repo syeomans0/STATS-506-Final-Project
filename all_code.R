@@ -13,6 +13,8 @@ head(gss)
 #Make sure the year variable is numeric
 gss$YEAR <- as.numeric(gss$YEAR)
 
+
+
 #Variables of interest: that relate to confidence in institutions 
 #CONFED - CONFID. IN EXEC BRANCH OF FED GOVT 
 #CONPRESS - CONFIDENCE IN PRESS 
@@ -26,6 +28,8 @@ gss$YEAR <- as.numeric(gss$YEAR)
 #SEX - RESPONDENTS SEX
 #RACE - RACE OF RESPONDENT
 #PARTYID - POLITICAL PARTY AFFILIATION (of respondent)
+
+
 
 #Make sure these vars are in the data set
 conf_vars <- c("CONFED","CONPRESS","CONJUDGE","CONLEGIS","CONARMY",
@@ -131,6 +135,9 @@ ggplot(gss_sum1, aes(x = YEAR, y = mean_con)) +
        caption = "Key: 1 = 'Hardly any', 2 = 'Some', 3 = 'Great deal'") +
   theme_minimal()
 
+
+
+
 #Need wights if we want this to be representative of the US population
 #For the pre-pandemic we need to use the WTSS weight
 #For the during/post we need to use the WTSSPS weight
@@ -151,6 +158,8 @@ gss_fin <- bind_rows(gss_pre, gss_dur)
 #Clean all the confidence vars (already set) in the combined
 gss_fin <- gss_fin %>%
            mutate(across(all_of(conf_vars), ~replace(., . %in% c(8,9, 0), NA)))
+table(gss_fin$SEX, useNA="ifany")
+table(gss_fin$RACE, useNA="ifany")
 
 #Find the mean confidence level over time (1-3 scale; labels above)
 #SUPREME COURT
@@ -207,6 +216,8 @@ ggplot(summary_press, aes(YEAR, mean_conf, color=period)) +
        y = "Weighted Confidence") +
   theme_minimal()
 rm(summary_court, summary_exec, summary_press)
+
+
 
 #Formal testing to see if there is a difference:
 #Null: the confidence levels of gov orgs are the same for pre and during/post pandemic years
@@ -312,6 +323,8 @@ ggplot(summary_finance, aes(YEAR, mean_conf, color=period)) +
 #Higher after great recession, then drops in 2018, and low throught and after pandemic
 rm(army_chi, congress_chi1, court_chi, execbranch_chi, finance_chi)
 
+
+
 #This just tested the association but now need to see controlling for covariates are there changes?
 #Need another test procedure to see if these results are consistent (maybe)
 #Use regression to do this 
@@ -336,16 +349,77 @@ summary(glm_finance)
 #significant
 rm(glm_congress, glm_court, glm_exec, glm_press, glm_army, glm_finance, conf_vars)
 
-#Think I have been using the wrong weight, need to go back and do some digging
+
+
+#Think I have been using the wrong weight, need to go back and do some digging (fixed)
 #Adding in the different demographic factors that might be influencing these trends
+#SEX: 1 = male, 2 = female
+#RACE: 1 = white, 2 = black, 3 = other
+#convert ^ to factors
+gss_fin$SEX  <- factor(gss_fin$SEX, levels = c(1,2),
+                       labels = c("Male", "Female"))
 
+gss_fin$RACE <- factor(gss_fin$RACE, levels = c(1,2,3),
+                       labels = c("White", "Black", "Other"))
 
+#Rerun survey design with factors
+gss_survey <- svydesign(id = ~VPSU, strata = ~VSTRAT, weights = ~weight, 
+                        data = gss_fin, nest = TRUE)
 
+#New GLM with factors
+glm_court_sr <- svyglm(CONJUDGE ~ period + SEX + RACE, design = gss_survey)
+summary(glm_court_sr)
 
+glm_exec_sr <- svyglm(CONFED ~ period + SEX + RACE, design = gss_survey)
+summary(glm_exec_sr)
 
+glm_congress_sr <- svyglm(CONLEGIS ~ period + SEX + RACE, design = gss_survey)
+summary(glm_congress_sr)
 
-#President political affiliation and the respondent's party affil
-#scatterplot showing this breakdown would be cool
+glm_press_sr <- svyglm(CONPRESS ~ period + SEX + RACE, design = gss_survey)
+summary(glm_press_sr)
+
+glm_army_sr <- svyglm(CONARMY ~ period + SEX + RACE, design = gss_survey)
+summary(glm_army_sr)
+
+glm_finance_sr <- svyglm(CONFINAN ~ period + SEX + RACE, design = gss_survey)
+summary(glm_finance_sr)
+
+#Interaction of SEX and RACE for executive branch
+interaction_sex <- svyglm(CONFED ~ period * SEX, design = gss_survey)
+summary(interaction_sex)
+
+#Plot of the interaction (just scatter plot and lines to see if slope is diff)
+summary_ps_exec <- gss_fin %>%
+  group_by(period, SEX) %>%
+  summarize(
+    mean_conf = weighted.mean(CONFED, WTSSNRPS, na.rm = TRUE),
+    .groups = "drop")
+
+#Interaction plot
+ggplot(summary_ps_exec, aes(x = period, y = mean_conf, color = SEX, group = SEX)) +
+  geom_point(size = 3) +
+  geom_line(size = 1.2) +
+  labs(x = "Period", y = "Weighted Mean Confidence", color = "Sex")
+
+interaction_race <- svyglm(CONFED ~ period * RACE, design = gss_survey)
+summary(interaction_race)
+
+summary_pr_exec <- gss_fin %>%
+  group_by(period, RACE) %>%
+  summarize(
+    mean_conf = weighted.mean(CONFED, WTSSNRPS, na.rm = TRUE),
+    .groups = "drop")
+
+#Interaction plot
+ggplot(summary_pr_exec, aes(x = period, y = mean_conf, color = RACE, group = RACE)) +
+  geom_point(size = 3) +
+  geom_line(size = 1.2) +
+  labs(x = "Period", y = "Weighted Mean Confidence", color = "RACE")
+
+#President political affiliation and the respondent's party affiliation
+#scatterplot showing this breakdown would be cool, 
+#not gonna be included in report bc it would make it too long but gonna code bc its fun
 
 
 
