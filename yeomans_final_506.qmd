@@ -5,7 +5,13 @@ title-fontstyle: "large"
 subtitle-fontstyle: "small"
 author: "Sydney Yeomans"
 author-fontstyle: "small"
-format: pdf
+format:
+  pdf:
+    geometry:
+      - top=1cm
+      - bottom=1cm
+      - left=1.5cm
+      - right=1.5cm
 editor: visual
 ---
 
@@ -29,9 +35,12 @@ The chi-square test of independence revealed if the confidence in our institutio
 
 To find out the type of association we found with the chi-square tests, we used generalized linear models (GLM). Normal link because interested in how much the confidence changes... Starting with confidence in the Supreme Court, we found a statistically significant result, with a p-value of $<2e^{-16}$, that showed pre-pandemic confidence was $-0.21$ points less than the post-pandemic confidence showing there was more confidence before the pandemic. Next, the confidence in the executive branch showed similar significant results (p-value of $0.0039$), pre-pandemic confidence was $-0.04$ points less than post-pandemic, but this result is not very big in magnitude. Congress was found not to be associated with period and the GLM results are consistent with this, producing a non-significant p-value. The confidence in the media and the military shows similar trends as the supreme court and executive branch, with both being statistically significant (p-value of $1.53e^{-05}$ and $<2e^{-16}$ respectively) and having more confidence in these institutions pre-pandemic with coefficients of $-0.066$ and $-0.13611$ for the media and military respectively. The confidence in banks and financial institutions had opposite results, we see more confidence in the post-pandemic period since we found a statistically significant (p-value of $1.78e^{-10}$) coefficient of $0.09561$. Therefore, for the most part, we see that confidence in government institutions was higher in the pre-pandemic period.  
 
-After finding these trends, we were curious if there were other variables affecting the confidence of the respondents to the GSS. With this, we added in demographic information into the GLM, namely, we added sex and race. Adding in this information, it was found that...
 
-Lastly, it was thought that political party might affect the relationship of confidence in institutions and time period. 
+```{r}
+#| echo: false
+#Figure for demographic differences
+```
+
 
 ## Discussion
 
