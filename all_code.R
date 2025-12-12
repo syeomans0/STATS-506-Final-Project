@@ -29,11 +29,11 @@ gss$YEAR <- as.numeric(gss$YEAR)
 
 #Make sure these vars are in the data set
 conf_vars <- c("CONFED","CONPRESS","CONJUDGE","CONLEGIS","CONARMY",
-               "CONGOVT","CONCONG","CONFINAN")
+               "CONGOVT","CONCONG","CONFINAN", "CONSCI")
 conf_vars %in% names(gss)
 #Get rid of the Missing values in these variables and the not answered numbers, 8 & 9
 gss <- gss %>%
-       mutate(across(all_of(conf_vars), ~replace(., . %in% c(8, 9), NA)))
+       mutate(across(all_of(conf_vars), ~replace(., . %in% c(8, 9, 0), NA)))
 
 #Set up years of interest
 #rm(years_post)
@@ -137,11 +137,11 @@ ggplot(gss_sum1, aes(x = YEAR, y = mean_con)) +
 #TALK MORE ABOUT THE WEIGHT CHOICES
 #These are already in the data set but want to give them the same name for ease of later use
 gss_pre <- gss_pre %>%
-           mutate(weight = WTSS,
+           mutate(weight = WTSSNRPS,
                   period = "Pre-pandemic")
 
 gss_dur <- gss_dur %>%
-           mutate(weight = WTSSPS,
+           mutate(weight = WTSSNRPS,
                   period = "During/Post-Pandemic")
 #rm(gss_sum, gss_sum1, gss_summary, gss_summary1)
 #How does adding these weights change our plots we originally made?
@@ -150,7 +150,7 @@ gss_fin <- bind_rows(gss_pre, gss_dur)
 
 #Clean all the confidence vars (already set) in the combined
 gss_fin <- gss_fin %>%
-           mutate(across(all_of(conf_vars), ~replace(., . %in% c(8,9), NA)))
+           mutate(across(all_of(conf_vars), ~replace(., . %in% c(8,9, 0), NA)))
 
 #Find the mean confidence level over time (1-3 scale; labels above)
 #SUPREME COURT
@@ -206,7 +206,7 @@ ggplot(summary_press, aes(YEAR, mean_conf, color=period)) +
        x = "Year", 
        y = "Weighted Confidence") +
   theme_minimal()
-
+rm(summary_court, summary_exec, summary_press)
 
 #Formal testing to see if there is a difference:
 #Null: the confidence levels of gov orgs are the same for pre and during/post pandemic years
@@ -220,7 +220,8 @@ install.packages("emmeans") #from class
 library(emmeans)
 
 #Chi square test with the survey package (since we have weights, for all 8 vars)
-gss_survey <- svydesign(id = ~1, weights = ~weight, data = gss_fin)
+gss_survey <- svydesign(id = ~VPSU, strata = ~VSTRAT, weights = ~weight, 
+                        data = gss_fin, nest = TRUE)
 
 court_chi <- svychisq(~ period + CONJUDGE, design = gss_survey)
 court_chi
@@ -234,6 +235,22 @@ execbranch_chi
 congress_chi1 <- svychisq(~ period + CONLEGIS, design = gss_survey)
 congress_chi1
 #not significant, use this variable
+summary_congress <- gss_fin %>%
+  summarize(mean_conf = weighted.mean(CONLEGIS, 
+                                      weight, na.rm=TRUE), .by=c(period, YEAR))
+
+ggplot(summary_congress, aes(YEAR, mean_conf, color=period)) +
+  geom_point(size=3) +
+  geom_line()+
+  geom_text(aes(label = round(mean_conf, 2)),
+            vjust = -0.8, hjust = 0.5,           
+            size = 3) +
+  scale_x_continuous(breaks = summary_congress$YEAR) +
+  scale_y_continuous(breaks=1:3, labels=c("Great deal","Some","Hardly any")) +
+  labs(title="Weighted Mean Confidence in the Congress",
+       x = "Year", 
+       y = "Average Weighted Confidence") +
+  theme_minimal()
 
 #rm(congress_chi2)
 #congress_chi2 <- svychisq(~ period + CONCONG, design = gss_survey) 
@@ -262,7 +279,7 @@ ggplot(summary_army, aes(YEAR, mean_conf, color=period)) +
   scale_y_continuous(breaks=1:3, labels=c("Great deal","Some","Hardly any")) +
   labs(title="Weighted Mean Confidence in the Military",
        x = "Year", 
-       y = "Weighted Confidence") +
+       y = "Average Weighted Confidence") +
   theme_minimal()
 #Wow this is way lower than I thought the values would be, interesting 
 #Afghanistan and other wars? 
@@ -290,10 +307,10 @@ ggplot(summary_finance, aes(YEAR, mean_conf, color=period)) +
   scale_y_continuous(breaks=1:3, labels=c("Great deal","Some","Hardly any")) +
   labs(title="Weighted Mean Confidence in Financial Institutions",
        x = "Year", 
-       y = "Weighted Confidence") +
+       y = "Average Weighted Confidence") +
   theme_minimal()
 #Higher after great recession, then drops in 2018, and low throught and after pandemic
-
+rm(army_chi, congress_chi1, court_chi, execbranch_chi, finance_chi)
 
 #This just tested the association but now need to see controlling for covariates are there changes?
 #Need another test procedure to see if these results are consistent (maybe)

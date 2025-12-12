@@ -6,19 +6,20 @@ editor: visual
 ---
 
 ## Abstract
-
 150-250 words
 
 
-## Introduction and Methodology
-
+## Introduction 
 Public confidence in institutions evolves over time and is influenced by major national events and politics. The COVID-19 pandemic was the most recent event that altered everyday life, including social, economic, and political environments, and potentially changed Americans' trust in their government's institutions. This project investigates how Americans' confidence in major government programs and institutions (i.e., the military, media, Congress, the Supreme Court, and more) has changed from the pre-pandemic period (2012–2018) to the pandemic and post-pandemic period (2021–2024)\footnote{The federal COVID-19 PHE declaration ended on May 11, 2023.}. Using data from the General Social Survey (GSS), this study will examine whether these patterns differ across demographic groups such as race and sex.
 
-Exploratory data analysis revealed several patterns in institutional confidence over time. For instance, weighted averages indicate that confidence in the Supreme Court 
+## Methods 
+This project utilizes publicly available data from the General Social Survey (GSS), conducted by the National Opinion Research Center (NORC), which is associated with the University of Chicago. The GSS includes data from 1972 to 2024 and contains a standard set of demographic, behavioral, and attitudinal questions, plus any topics of special interest. There are various questions that ask about the respondents confidence in government organizations and institutions. The question they ask the respondent's in regards to confidence is the following, ``I am going to name some institutions in this country. As far as the people running these institutions are concerned, would you say you have a great deal of confidence, only some confidence, or hardly any confidence at all in them?'' The respondent can answer either ``A great deal (1),'' ``Only some (2),'' or ``Hardly any (3).'' There are codes for responses such as don't know or no response as well. 
 
-After cleaning the data and addressing missing or invalid responses, the final data set contains $20,612$ observations across $6,906$ variables.
+NORC does not provide their  design-adjusted weights due to wanting to keep confidentiality and protecting the respondents. Instead they add weights to the public data set adjusted by population controls, specifically, post-stratification weight variables WTSSPS and WTSSNRPS. It is very important to use these post-stratification weights to get more representative results, and since I am using years $2012-2024$, I will be using WTSSNRPS, which is available for years $2004-2024$. This weight was assigned to the completed cases and accounts for all stages of selection: National Frame Areas (NFA), segment, housing unit, within household, raking to known population totals, and non-response adjustment.  
 
-To formally test if differences exist between the two periods, statistical models and testing were used. To start, a chi-squared test of independence was used to see if an association existed between period and the confidence in the institutions of interest. Next, a generalized linear model (GLM) was used to see if this association was significant and to give it magnitude. Once this was done, we added in demographic information that could be playing a role in people's confidence in these institutions. Lastly, the party affiliation of the sitting president and the party affiliation of the respondent were explored, as these were thought to play a role in confidence as well. 
+Exploratory data analysis revealed that the GSS has moved away from yearly surveys. Due to this I decided to include more years pre-pandemic to make up for the lack of data and the same was applied to the post-pandemic, turning it into during and post-pandemic years. The EDA provided some very interesting insights by making plots to see how the average response changes over the years. From this we saw that confidence in the Supreme Court had smaller averages compared pre-pandemic meaning there was less confidence in this system than after. We also saw this to be the case for confidence in the military. There is notable volatility in the average confidence in the executive branch of government, congress, and the media. Lastly, for banks and financial institutions there seems to be less confidence pre-pandemic and slightly more confidence post-pandemic, but it was still only at just some confidence. After data cleaning, we end up with $20,612$ observations on over $6,000$ variables.
+
+To formally test if differences exist between the two periods, statistical models and testing were used. To start, a chi-squared test of independence was used to see if an association existed between period and the confidence in the institutions of interest. Once this was established, a generalized linear model (GLM) was used to see if this association was significant and to give it magnitude. Once this was done, we added in demographic information that could be playing a role in people's confidence in these institutions. Lastly, the party affiliation of the sitting president and the party affiliation of the respondent were explored, as these were thought to play a role in confidence as well. 
 
 
 ## Analysis and Results
