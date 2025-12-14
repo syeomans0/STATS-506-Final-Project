@@ -18,107 +18,104 @@ editor: visual
 \vspace{-2.0cm}
 
 ## Introduction 
-Public confidence in institutions evolves over time and is influenced by major national events and politics. The COVID-19 pandemic was the most recent event that altered everyday life, including social, economic, and political environments, and potentially changed Americans' trust in their government's institutions. This project investigates how Americans' confidence in major government programs and institutions (i.e., the military, media, Congress, the Supreme Court, and more) has changed from the pre-pandemic period (2012–2018) to the pandemic and post-pandemic period (2021–2024)\footnote{The federal COVID-19 PHE declaration ended on May 11, 2023.}. Using data from the General Social Survey (GSS), this study will examine whether these patterns differ across demographic groups such as race and sex.
+Public confidence in institutions evolves over time and is influenced by major national events and politics. The COVID-19 pandemic was the most recent event that altered everyday life, including social, economic, and political environments, and potentially changed Americans' trust in their government's institutions. This project investigates how Americans' confidence in major government programs and institutions (i.e., the Military, Congress, Supreme Court, and Executive Branch) has changed from pre-pandemic (2012-2018) to during the pandemic (2021-2022) and post-pandemic (2023-2024) \footnote{The during and post periods are combined and referred to as post-pandemic for efficiency.}. Using data from the General Social Survey (GSS), this study will examine whether these patterns differ across demographic groups such as race and sex
 
 ## Methods 
-This project utilizes publicly available data from the General Social Survey (GSS), conducted by the National Opinion Research Center (NORC), which is associated with the University of Chicago. The GSS includes data from 1972 to 2024 and contains a standard set of demographic, behavioral, and attitudinal questions, plus any topics of special interest. There are various questions that ask about the respondents confidence in government organizations and institutions. The question they ask the respondent in regards to confidence is the following, "I am going to name some institutions in this country. As far as the people running these institutions are concerned, would you say you have a great deal of confidence (1), only some confidence (2), or hardly any (3) confidence at all in them?" \cite{survey_q}.
+This project utilizes publicly available data from the General Social Survey (GSS), conducted by the National Opinion Research Center (NORC), which is associated with the University of Chicago. The GSS includes data from 1972 to 2024 and contains a standard set of demographic, behavioral, and attitudinal questions, plus any topics of special interest. There are various questions that ask about the respondents confidence in government organizations and institutions. The question they ask the respondent's in regards to confidence is the following, ``I am going to name some institutions in this country. As far as the people running these institutions are concerned, would you say you have a great deal of confidence (1), only some confidence (2), or hardly any confidence (3) at all in them?'' \cite{survey_q} \footnote{The numbers in parenthesis are the codes for such responses.}.
 
-NORC does not provide their  design-adjusted weights due to wanting to keep confidentiality and protecting the respondents. Instead they add weights to the public data set adjusted by population controls, specifically, post-stratification weight variables WTSSPS and WTSSNRPS. It is very important to use these post-stratification weights to get more representative results, and since I am using years $2012-2024$, I will be using WTSSNRPS, which is available for years $2004-2024$. This weight was assigned to the completed cases and accounts for all stages of selection: National Frame Areas (NFA), segment, housing unit, within household, raking to known population totals, and non-response adjustment.  
+NORC does not provide their design-adjusted weights due to wanting to keep confidentiality and protection for the respondents. Instead they add weights to the public data set adjusted by population controls, specifically, they add the post-stratification weight variables WTSSPS and WTSSNRPS. It is very important to use these weights to get more representative results, and since this project is using years $2012-2024$, the weight WTSSNRPS is used, which is available for years $2004-2024$ \footnote{For more information about this weight variable please see the GSS documentation}.   
 
-Exploratory data analysis revealed that the GSS has moved away from yearly surveys. Due to this I decided to include more years pre-pandemic to make up for the lack of data and the same was applied to the post-pandemic, turning it into during and post-pandemic years. The EDA provided some very interesting insights by making plots to see how the average response changes over the years. From this we saw that confidence in the Supreme Court had smaller averages compared pre-pandemic meaning there was less confidence in this system than after. We also saw this to be the case for confidence in the military. There is notable volatility in the average confidence in the executive branch of government, congress, and the media. Lastly, for banks and financial institutions there seems to be less confidence pre-pandemic and slightly more confidence post-pandemic, but it was still only at just some confidence. After data cleaning, we end up with $20,612$ observations on over $6,000$ variables.
+Exploratory data analysis revealed that the GSS has moved away from yearly surveys and provided some very interesting insights by making plots to see how the average response to the question on confidence changes over the years. From this we saw that confidence in the Supreme Court had smaller averages compared pre-pandemic meaning there was less confidence in this system than after. We also saw this to be the case for confidence in the Military. There is notable volatility in the average confidence in the Executive Branch of Government and Congress. After data cleaning, we end up with $20,612$ observations on $6,906$ variables.
 
-To formally test if differences exist between the two periods, statistical models and testing were used. To start, a chi-squared test of independence was used to see if an association existed between period and the confidence in the institutions of interest. Once this was established, a generalized linear model (GLM) was used to see if this association was significant and to give it magnitude. Once this was done, we added in demographic information that could be playing a role in people's confidence in these institutions. Lastly, the party affiliation of the sitting president and the party affiliation of the respondent were explored, as these were thought to play a role in confidence as well. 
+To formally test if differences exist between the two periods, statistical models and testing were used. To start, a chi-squared test of independence was used to see if an association existed between period and the confidence in the institutions of interest. Once this was established, a generalized linear model (GLM) was used to see if this association was significant and to give it magnitude. Once this was done, we added in demographic information that could be playing a role in people's confidence in these institutions.  
 
 
 ## Analysis and Results
-The chi-square test of independence revealed if the confidence in our institutions of interest were associated with time period, which is this case was pre-pandemic and during/post-pandemic. After running these test we found that there is an association for confidence and period for the Supreme Court, the executive branch of government, the media, the army and banks and financial institutions. This means that we would reject the null of the chi-square test, that our two categorical variables are independent (i.e. no association). We would conclude that these variables are not independent. The variable for the confidence in congress is not significant, meaning we fail to reject the null. Therefore, confidence in congress and period show no association. Although we were able to find an association we do not know what this association is. 
+The chi-square test of independence revealed if the confidence in our institutions of interest were associated with time period, which is this case was pre-pandemic and during/post-pandemic. After running these tests, we found that there is an association for confidence and period for the Supreme Court, the Executive Branch of Government, and the Military. This means that we would reject the null of the chi-square test, that our two categorical variables are independent (i.e. no association). We would conclude that these variables are not independent. The variable for the confidence in Congress was not significant, meaning we fail to reject the null. Therefore, confidence in Congress and period show no association. Although we were able to find an association we do not know what this association is.  
 
-To find out the type of association we found with the chi-square tests, we used generalized linear models (GLM). Normal link because interested in how much the confidence changes... Starting with confidence in the Supreme Court, we found a statistically significant result, with a p-value of $<2e^{-16}$, that showed pre-pandemic confidence was $-0.21$ points less than the post-pandemic confidence showing there was more confidence before the pandemic. Next, the confidence in the executive branch showed similar significant results (p-value of $0.0039$), pre-pandemic confidence was $-0.04$ points less than post-pandemic, but this result is not very big in magnitude. Congress was found not to be associated with period and the GLM results are consistent with this, producing a non-significant p-value. The confidence in the media and the military shows similar trends as the supreme court and executive branch, with both being statistically significant (p-value of $1.53e^{-05}$ and $<2e^{-16}$ respectively) and having more confidence in these institutions pre-pandemic with coefficients of $-0.066$ and $-0.13611$ for the media and military respectively. The confidence in banks and financial institutions had opposite results, we see more confidence in the post-pandemic period since we found a statistically significant (p-value of $1.78e^{-10}$) coefficient of $0.09561$. Therefore, for the most part, we see that confidence in government institutions was higher in the pre-pandemic period.  
+To find out the type of association we found with the chi-square tests, we used generalized linear models (GLM), using a normal link to examine how confidence scores changed across periods. Starting with confidence in the Supreme Court, we found a statistically significant result, with a p-value of $<2e^{-16}$, that showed pre-pandemic confidence was $0.21$ points lower than post-pandemic, showing there was more confidence before the pandemic. Next, the confidence in the Executive Branch showed similar significant results (p-value of $0.0039$), pre-pandemic confidence was $0.04$ points less than post-pandemic, but this result is not very big in magnitude. Congress was found not to be associated with period and the GLM results are consistent with this, producing a non-significant p-value. The confidence in the Military shows similar trends as the first two, with it being statistically significant (p-value of $<2e^{-16}$) and having more confidence in this institution pre-pandemic with a coefficient of $-0.13611$. Therefore, we see that confidence in government institutions was higher in the pre-pandemic period.  
 
-```{r}
-#| echo: false
-#Figure for simple model differences
-```
-
-We next examined whether demographic characteristics affected these confidence patterns by including sex and race in the GLMs. This revealed similar patterns and we do see changes when including the respondent's sex and race. The reference group is post-pandemic, male, and white. Again, starting with the Supreme Court, we see that pre-pandemic showed higher confidence holding other variables constant. Females seemed to trust the supreme court, holding other variables constant, which makes sense since Roe v. Wade was overturned in $2022$. The same is true for respondents who were Black, while the Other group had slightly higher confidence than the reference group. All results for the Supreme Court were significant. Our next model was for confidence in the executive branch of government.
 
 ```{r}
 #| echo: false
 #| message: false
 #| warning: false
-#Figure for demographic differences
+#| label: fig-myplot
+#| fig-cap: "Weighted average confidence plots over time seperated by insitution of interest."
 library(tidyverse)
 library(ggplot2)
 library(dplyr)
 library(data.table)
 library(haven)
 gss <- read_sas("gss7224_r2.sas7bdat")
-#Make sure the year variable is numeric
 gss$YEAR <- as.numeric(gss$YEAR)
-conf_vars <- c("CONFED","CONPRESS","CONJUDGE","CONLEGIS","CONARMY",
-               "CONGOVT","CONCONG","CONFINAN")
+conf_vars <- c("CONFED","CONJUDGE","CONLEGIS","CONARMY")
 gss <- gss %>%
-       mutate(across(all_of(conf_vars), ~replace(., . %in% c(8, 9, 0), NA)))
+  mutate(across(all_of(conf_vars), ~replace(., . %in% c(8, 9, 0), NA)))
 
 #Set up years of interest
-#rm(years_post)
 years_pre  <- 2012:2018
 years_dur <- c(2021, 2022, 2023, 2024)
-
-#Make a subsetted pre-pandemic data set
 gss_pre <- gss %>%
-           filter(YEAR %in% years_pre)
-#head(gss_pre) <- previewed to see if it worked
+  filter(YEAR %in% years_pre)
 
 #Subset for the during and post pandemic dates
-#rm(gss_post)
 gss_dur <- gss %>%
-            filter(YEAR %in% years_dur)
+  filter(YEAR %in% years_dur)
 gss_pre <- gss_pre %>%
-           mutate(weight = WTSSNRPS,
-                  period = "Pre-pandemic")
+  mutate(weight = WTSSNRPS,
+         period = "Pre-pandemic")
 
 gss_dur <- gss_dur %>%
-           mutate(weight = WTSSNRPS,
-                  period = "During/Post-Pandemic")
+  mutate(weight = WTSSNRPS,
+         period = "During/Post-Pandemic")
 gss_fin <- bind_rows(gss_pre, gss_dur)
-
-#Clean all the confidence vars (already set) in the combined
 gss_fin <- gss_fin %>%
-           mutate(across(all_of(conf_vars), ~replace(., . %in% c(8,9, 0), NA)))
+  mutate(across(all_of(conf_vars), ~replace(., . %in% c(8,9, 0), NA)))
 gss_fin$SEX  <- factor(gss_fin$SEX, levels = c(1,2),
                        labels = c("Male", "Female"))
+conf_labels <- c(CONJUDGE = "Supreme Court", CONLEGIS = "Congress",
+                 CONFED   = "Executive Branch", CONARMY  = "Military")
 
-gss_fin$RACE <- factor(gss_fin$RACE, levels = c(1,2,3),
-                       labels = c("White", "Black", "Other"))
+gss_long <- gss_fin %>%
+            select(YEAR, period, weight, all_of(names(conf_labels))) %>%
+            pivot_longer(cols = all_of(names(conf_labels)),
+                         names_to = "institution",
+                         values_to = "confidence") %>%
+            mutate(institution = conf_labels[institution])
 
-summary_pr_exec <- gss_fin %>%
-                   group_by(period, RACE) %>%
-            summarize(mean_conf = weighted.mean(CONFED, WTSSNRPS, na.rm = TRUE),
-                      .groups = "drop") %>%
-                   ungroup()
+summary_long <- gss_long %>%
+                group_by(institution, period, YEAR) %>%
+                summarize(mean_conf = weighted.mean(confidence, weight, na.rm = TRUE),
+                          .groups = "drop") %>%
+                ungroup()
 
-#Interaction plot
-ggplot(summary_pr_exec, aes(x = period, y = mean_conf, color = RACE, group = RACE)) +
-  geom_point(size = 3) +
-  geom_line(size = 1.2) +
-  labs(title="Weighted Mean Confidence in Financial Institutions by Race",
-       x = "Period", 
-       y = "Weighted Mean Confidence", 
-       color = "RACE")
+ggplot(summary_long, aes(x = YEAR, y = mean_conf, color = period)) +
+  geom_line(linewidth = 1) + 
+  geom_point(size = 2) +
+  facet_wrap(~ institution, scales = "fixed") +
+  scale_x_continuous(breaks = summary_inst$YEAR) +
+  scale_y_continuous(limits = c(1, 3), breaks = 1:3,
+    labels = c("A great deal", "Only some", "Hardly any")) +
+  labs(title = "Weighted Average Confidence in U.S. Institutions",
+       x = "Year",
+       y = "Weighted Average Confidence",
+       color = "Period") +
+  theme_minimal(base_size = 12) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 7))
 ```
 
+We next examined whether demographic characteristics affected these confidence patterns by including sex and race in the GLMs. This revealed similar patterns to the simple model, but we do see some notable changes when including the respondent's sex and race. The reference group is post-pandemic, male, and white. Starting with the Supreme Court, we see that the pre-pandemic period showed higher confidence holding other variables constant, which follows the results of the simple model. Females seemed to trust the Supreme Court less than males post-pandemic holding race constant, which makes sense since Roe v. Wade was overturned in $2022$. The same is true for respondents who were Black, while the Other group had slightly higher confidence than the reference group. All results for the Supreme Court were significant. Confidence in the Executive Branch of Government was seen to be higher pre-pandemic holding all else constant, matching previous results. Females results showed females post-pandemic were more confident in this branch of government, but the results were not significant, showing that the difference between males and females for the Executive Branch can't be said to exist. Respondents that fell into the Black and Other racial category showed higher confidence in the Executive branch than our reference group post-pandemic with significant results. This could possibly be due to the political party of the sitting president switching to a Democrat, in which a majority of people who fall into these categories vote for. The results for Congress showed differing results compared to the simple model. Before, the period variable for Congress had non-significant results, however, after factoring in sex and race we see these results are now significant and pre-pandemic can be seen to have slightly higher confidence, holding other factors constant. The other demographic variables are all significant and show higher confidence post-pandemic since all their coefficients are negative, possibly due political undertones. Lastly, the Military pre-pandemic was seen to have more confidence holding everything else constant, which was seen first in the simple model. Adding in demographic information, it is seen the respondents post-pandemic had slightly less confidence in the Military as seen by the positive coefficients they have, holding all else constant. From these results, we can see that demographic information plays a role in the patterns we see for the confidence in major institutions.
 
 ## Discussion
+In this paper, we explored how the confidence in major institutions in the US changed from pre-pandemic to during/post-pandemic. The results consistently showed that across institutions, pre-pandemic confidence was generally higher. We also saw that demographic factors moderate confidence levels and these factors sometimes amplifying or reducing the period differences that were observed in the simpler models. 
 
-In this paper, we explored how the confidence in major institutions in the US change from pre-pandemic to post-pandemic. The results consistently showed ...
+Despite the insights gained, there are some limitations that should be addressed. First, while survey weights and design adjustments were used to make the data more representative, this work only included $20,000$ observations meaning these results should not be generalized to the million of US citizens. Second, missing data and the removal of "don’t know" or non-responses may introduce bias and affected the confidence estimates, once again making the data not fully representative of the whole US population. Lastly, due to the gaps in survey years, the during the pandemic years were added and this could have altered the results. Future work should look to overcome these limitations. On top of this, political party affiliation of either the respondent or the sitting President were not included. This would most likely offer additional explanation to confidence patterns and should be looked into in future work.
 
-Despite the insights gained, there are some limitations that should be addressed.
-
-In conclusion, ...
+In conclusion, the pandemic represents a notable disruption that influenced Americans’ confidence in Government institutions. These shifts highlight the dynamic nature of public trust, and with many ongoing societal and political changes, we should keep an eye on these trends in the coming years. 
 
 \clearpage
-Github URL: <https://github.com/syeomans0/STATS-506-Final-Project.git>
+Github URL: \url{https://github.com/syeomans0/STATS-506-Final-Project.git}
 \\
 \begin{thebibliography}{99}
 
@@ -126,7 +123,13 @@ Github URL: <https://github.com/syeomans0/STATS-506-Final-Project.git>
 Smith, Tom W., Davern, Michael, Freese, Jeremy, and Stephen L. Morgan. General Social Surveys, 1972-2018, Cumulative Codebook. Principal Investigator, Tom W. Smith; Co-Principal Investigators, Michael Davern, Jeremy Freese
 and Stephen L. Morgan, NORC ed. Chicago: NORC, 2019. 1 data file (64,814 logical records) and 1 codebook (3,758 pp).
 
+\bibitem{survey_wgt}
+Vegetti, F. Survey Weights with R. Survey Statistics – Day 2. \url{https://federicovegetti.github.io/teaching/heidelberg_2018/lab/sst_lab_day2.html}
+
 \bibitem{chi_sqr} 
-citation...
+User Dpel, and Pasek , J. (2018, June 26). Contingency Table P values using R base, Weights and Survey. Stack Overflow. \url{https://stackoverflow.com/questions/50396708/contingency-table-p-values-using-r-base-weights-and-survey}
+
+\bibitem{chat_gpt}
+Attribution of Sources: ChatGPT was used when I ran into issues. First, including the averages on top of my individual summary plots. Then when I ran into factor issues with my GLM models that included sex and race, it helped me understand why my survey design failed to work after the conversion to factors and it also helped with my interaction plots since I tried to use code following the STATS 250 labs I taught, but it was not working. Lastly, it helped prepare my data to be faceted correctly (the pivot long) for the plot included in the report.
 
 \end{thebibliography}

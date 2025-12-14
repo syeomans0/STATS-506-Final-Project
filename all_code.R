@@ -52,7 +52,7 @@ gss_pre <- gss %>%
 #Subset for the during and post pandemic dates
 #rm(gss_post)
 gss_dur <- gss %>%
-            filter(YEAR %in% years_dur)
+           filter(YEAR %in% years_dur)
 
 #Basic scatter-plot for CONJUDGE and CONLEGIS (without weights so just raw data)
 #Since there are tons of IDs (aka respondents) find the average confidence
@@ -141,7 +141,7 @@ ggplot(gss_sum1, aes(x = YEAR, y = mean_con)) +
 #Need wights if we want this to be representative of the US population
 #For the pre-pandemic we need to use the WTSS weight
 #For the during/post we need to use the WTSSPS weight
-#TALK MORE ABOUT THE WEIGHT CHOICES
+#TALK MORE ABOUT THE WEIGHT CHOICES in report
 #These are already in the data set but want to give them the same name for ease of later use
 gss_pre <- gss_pre %>%
            mutate(weight = WTSSNRPS,
@@ -158,8 +158,8 @@ gss_fin <- bind_rows(gss_pre, gss_dur)
 #Clean all the confidence vars (already set) in the combined
 gss_fin <- gss_fin %>%
            mutate(across(all_of(conf_vars), ~replace(., . %in% c(8,9, 0), NA)))
-table(gss_fin$SEX, useNA="ifany")
-table(gss_fin$RACE, useNA="ifany")
+#table(gss_fin$SEX, useNA="ifany")
+#table(gss_fin$RACE, useNA="ifany")
 
 #Find the mean confidence level over time (1-3 scale; labels above)
 #SUPREME COURT
@@ -225,9 +225,9 @@ rm(summary_court, summary_exec, summary_press)
 #Some more packages, now for hypo test
 install.packages("survey") #came across when looking how to add survey weights to models
 library(survey)
-install.packages("multcomp") #from class
+install.packages("multcomp") #from class, not used
 library(multcomp)
-install.packages("emmeans") #from class
+install.packages("emmeans") #from class, not used
 library(emmeans)
 
 #Chi square test with the survey package (since we have weights, for all 8 vars)
@@ -376,14 +376,14 @@ summary(glm_exec_sr)
 glm_congress_sr <- svyglm(CONLEGIS ~ period + SEX + RACE, design = gss_survey)
 summary(glm_congress_sr)
 
-glm_press_sr <- svyglm(CONPRESS ~ period + SEX + RACE, design = gss_survey)
-summary(glm_press_sr)
+#glm_press_sr <- svyglm(CONPRESS ~ period + SEX + RACE, design = gss_survey)
+#summary(glm_press_sr)
 
 glm_army_sr <- svyglm(CONARMY ~ period + SEX + RACE, design = gss_survey)
 summary(glm_army_sr)
 
-glm_finance_sr <- svyglm(CONFINAN ~ period + SEX + RACE, design = gss_survey)
-summary(glm_finance_sr)
+#glm_finance_sr <- svyglm(CONFINAN ~ period + SEX + RACE, design = gss_survey)
+#summary(glm_finance_sr)
 
 #Interaction of SEX and RACE for executive branch
 interaction_sex <- svyglm(CONFED ~ period * SEX, design = gss_survey)
@@ -396,7 +396,7 @@ summary_ps_exec <- gss_fin %>%
     mean_conf = weighted.mean(CONFED, WTSSNRPS, na.rm = TRUE),
     .groups = "drop")
 
-#Interaction plot
+#Interaction plot (not very good looking)
 ggplot(summary_ps_exec, aes(x = period, y = mean_conf, color = SEX, group = SEX)) +
   geom_point(size = 3) +
   geom_line(size = 1.2) +
@@ -423,16 +423,40 @@ ggplot(summary_pr_exec, aes(x = period, y = mean_conf, color = RACE, group = RAC
        y = "Weighted Mean Confidence", 
        color = "RACE")
 
-#Publication ready plot aka my figures for the actual report
-#can do what I have been doing by facet by institution or do interaction plots
+#Publication ready plot aka my figure for the actual report
+#can do what I have been doing by facet by institution
+conf_labels <- c(CONJUDGE = "Supreme Court", CONLEGIS = "Congress",
+                 CONFED   = "Executive Branch", CONARMY  = "Military")
+
+gss_long <- gss_fin %>%
+            select(YEAR, period, weight, all_of(names(conf_labels))) %>%
+            pivot_longer(cols = all_of(names(conf_labels)),
+                         names_to = "institution",
+                         values_to = "confidence") %>%
+            mutate(institution = conf_labels[institution])
+
+summary_long <- gss_long %>%
+                group_by(institution, period, YEAR) %>%
+                summarize(mean_conf = weighted.mean(confidence, weight, na.rm = TRUE),
+                          .groups = "drop") %>%
+                ungroup()
+
+ggplot(summary_long, aes(x = YEAR, y = mean_conf, color = period)) +
+  geom_line(linewidth = 1) + 
+  geom_point(size = 2) +
+  facet_wrap(~ institution, scales = "fixed") +
+  scale_x_continuous(breaks = summary_inst$YEAR) +
+  scale_y_continuous(limits = c(1, 3), breaks = 1:3,
+    labels = c("A great deal", "Only some", "Hardly any")) +
+  labs(title = "Weighted Average Confidence in U.S. Institutions",
+       x = "Year",
+       y = "Weighted Average Confidence",
+       color = "Period") +
+  theme_minimal(base_size = 12) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 7))
 
 
 
-
-
-#President political affiliation and the respondent's party affiliation
-#scatterplot showing this breakdown would be cool, 
-#not gonna be included in report bc it would make it too long but gonna code bc its fun
 
 
 
